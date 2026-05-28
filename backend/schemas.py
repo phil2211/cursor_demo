@@ -12,6 +12,11 @@ class FeedbackCreate(BaseModel):
     email: Optional[str] = None
 
 
+class FeedbackUpdate(BaseModel):
+    sentiment: Optional[Sentiment] = None
+    status: Optional[Status] = None
+
+
 class FeedbackResponse(BaseModel):
     id: int
     message: str

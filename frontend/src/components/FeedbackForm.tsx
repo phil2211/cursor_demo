@@ -59,6 +59,13 @@ export function FeedbackForm({ onSubmitted }: FeedbackFormProps) {
             placeholder="What did they say?"
             className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
           />
+          <p
+            data-testid="feedback-message-count"
+            className="mt-1 text-right text-xs text-slate-400"
+            aria-live="polite"
+          >
+            {message.length} {message.length === 1 ? "character" : "characters"}
+          </p>
         </div>
 
         <div>
@@ -90,7 +97,7 @@ export function FeedbackForm({ onSubmitted }: FeedbackFormProps) {
         type="submit"
         data-testid="feedback-submit"
         disabled={submitting || !message.trim()}
-        className="mt-4 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-4 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {submitting ? "Submitting…" : "Submit feedback"}
       </button>

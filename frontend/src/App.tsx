@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
-import { fetchFeedback } from "./api/feedback";
+import { fetchFeedback, updateFeedback } from "./api/feedback";
 import { FeedbackForm } from "./components/FeedbackForm";
-import { FeedbackList } from "./components/FeedbackList";
-import type { Feedback } from "./types/feedback";
+import { TriageBoard } from "./components/TriageBoard";
+import type { Feedback, FeedbackUpdate } from "./types/feedback";
 
 export default function App() {
   const [items, setItems] = useState<Feedback[]>([]);
   const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const loadFeedback = useCallback(async () => {
@@ -24,6 +25,39 @@ export default function App() {
   useEffect(() => {
     void loadFeedback();
   }, [loadFeedback]);
+
+  async function handleUpdateFeedback(id: number, payload: FeedbackUpdate) {
+    const previous = items.find((item) => item.id === id);
+    if (!previous) return;
+
+    const optimistic: Feedback = {
+      ...previous,
+      ...payload,
+      sentiment:
+        payload.sentiment !== undefined ? payload.sentiment : previous.sentiment,
+      status: payload.status ?? previous.status,
+    };
+
+    setUpdatingId(id);
+    setError(null);
+    setItems((current) =>
+      current.map((item) => (item.id === id ? optimistic : item))
+    );
+
+    try {
+      const updated = await updateFeedback(id, payload);
+      setItems((current) =>
+        current.map((item) => (item.id === id ? updated : item))
+      );
+    } catch (err) {
+      setItems((current) =>
+        current.map((item) => (item.id === id ? previous : item))
+      );
+      setError(err instanceof Error ? err.message : "Could not update feedback.");
+    } finally {
+      setUpdatingId(null);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -50,14 +84,19 @@ export default function App() {
           </p>
         )}
 
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+        <div className="flex flex-col gap-8">
           <FeedbackForm
             onSubmitted={() => {
               setLoading(true);
               void loadFeedback();
             }}
           />
-          <FeedbackList items={items} loading={loading} />
+          <TriageBoard
+            items={items}
+            loading={loading}
+            updatingId={updatingId}
+            onUpdate={handleUpdateFeedback}
+          />
         </div>
       </main>
     </div>
