@@ -1,0 +1,5 @@
+# Demo assets
+
+Optional fallback recordings from cloud agent rehearsals.
+
+Place a successful run recording here (e.g. `rehearsal-recording.mp4`) to show while waiting if the live cloud agent is slow.
