@@ -34,7 +34,7 @@ backend/
 # Backend (from backend/)
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-uvicorn main:app --reload --port 8000
+uvicorn main:app --reload --reload-exclude '.venv/*' --port 8000
 
 # Frontend (from frontend/)
 npm install
