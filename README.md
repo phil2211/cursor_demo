@@ -46,7 +46,8 @@ App: http://localhost:5173 (proxies `/api` to the backend)
 | Act | Mode | Goal |
 |-----|------|------|
 | 0–2 min | Narration | Tour MVP in integrated browser |
-| 2–8 min | **Plan** | Approve `docs/demo-act2-spec.md` |
+| 2-3 min | **Plan** | Go to plan mode to build next feature |
+| 3–8 min | **Plan** | Approve `docs/demo-act2-spec.md` |
 | 8–20 min | **Agent** | Sentiment chips + triage board |
 | 20–25 min | **Agent + AGENTS.md** | Style/copy rules |
 | 25–28 min | **Cloud agent** | Playwright e2e from `docs/demo-cloud-task.md` |
