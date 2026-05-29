@@ -41,18 +41,6 @@ App: http://localhost:5173 (proxies `/api` to the backend)
 - Inbox list, newest first (all items start as `new`)
 - SQLite persistence with 7 seeded sample rows
 
-## Demo script outline
-
-| Act | Mode | Goal |
-|-----|------|------|
-| 0–2 min | Narration | Tour MVP in integrated browser |
-| 2-3 min | **Plan** | Go to plan mode to build next feature |
-| 3–8 min | **Plan** | Approve `docs/demo-act2-spec.md` |
-| 8–20 min | **Agent** | Sentiment chips + triage board |
-| 20–25 min | **Agent + AGENTS.md** | Style/copy rules |
-| 25–28 min | **Cloud agent** | Playwright e2e from `docs/demo-cloud-task.md` |
-| 28–30 min | Close | Show video/trace artifacts |
-
 See `mvp.md` for the full design specification.
 
 ## Repository layout
