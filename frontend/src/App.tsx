@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { fetchFeedback } from "./api/feedback";
+import { FeedbackBoard } from "./components/FeedbackBoard";
 import { FeedbackForm } from "./components/FeedbackForm";
-import { FeedbackList } from "./components/FeedbackList";
+import { Logo } from "./components/Logo";
 import type { Feedback } from "./types/feedback";
 
 export default function App() {
@@ -9,7 +10,10 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadFeedback = useCallback(async () => {
+  const loadFeedback = useCallback(async (showLoading = false) => {
+    if (showLoading) {
+      setLoading(true);
+    }
     setError(null);
     try {
       const data = await fetchFeedback();
@@ -22,20 +26,23 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    void loadFeedback();
+    void loadFeedback(true);
   }, [loadFeedback]);
 
   return (
     <div className="min-h-screen bg-slate-50">
       <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-slate-900">
-              Feedback Pulse
-            </h1>
-            <p className="text-sm text-slate-500">
-              Customer feedback inbox for your product team
-            </p>
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-5">
+          <div className="flex min-w-0 items-center gap-4">
+            <Logo />
+            <div className="min-w-0">
+              <h1 className="text-xl font-bold tracking-tight text-slate-900">
+                Feedback Pulse
+              </h1>
+              <p className="text-sm text-slate-500">
+                Customer feedback inbox for your product team
+              </p>
+            </div>
           </div>
           <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
             MVP
@@ -50,14 +57,22 @@ export default function App() {
           </p>
         )}
 
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
-          <FeedbackForm
-            onSubmitted={() => {
-              setLoading(true);
+        <div className="space-y-8">
+          <div className="max-w-xl">
+            <FeedbackForm
+              onSubmitted={() => {
+                void loadFeedback(true);
+              }}
+            />
+          </div>
+
+          <FeedbackBoard
+            items={items}
+            loading={loading}
+            onUpdated={() => {
               void loadFeedback();
             }}
           />
-          <FeedbackList items={items} loading={loading} />
         </div>
       </main>
     </div>
