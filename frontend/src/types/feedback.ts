@@ -14,3 +14,8 @@ export interface FeedbackCreate {
   message: string;
   email?: string;
 }
+
+export interface FeedbackUpdate {
+  sentiment?: Sentiment;
+  status?: Status;
+}

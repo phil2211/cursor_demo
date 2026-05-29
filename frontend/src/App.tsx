@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { fetchFeedback } from "./api/feedback";
 import { FeedbackForm } from "./components/FeedbackForm";
-import { FeedbackList } from "./components/FeedbackList";
+import { TriageBoard } from "./components/TriageBoard";
 import type { Feedback } from "./types/feedback";
 
 export default function App() {
@@ -24,6 +24,12 @@ export default function App() {
   useEffect(() => {
     void loadFeedback();
   }, [loadFeedback]);
+
+  const handleItemUpdated = useCallback((updated: Feedback) => {
+    setItems((prev) =>
+      prev.map((item) => (item.id === updated.id ? updated : item))
+    );
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -50,14 +56,18 @@ export default function App() {
           </p>
         )}
 
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
           <FeedbackForm
             onSubmitted={() => {
               setLoading(true);
               void loadFeedback();
             }}
           />
-          <FeedbackList items={items} loading={loading} />
+          <TriageBoard
+            items={items}
+            loading={loading}
+            onItemUpdated={handleItemUpdated}
+          />
         </div>
       </main>
     </div>
