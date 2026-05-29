@@ -5,6 +5,8 @@ interface FeedbackFormProps {
   onSubmitted: () => void;
 }
 
+const MESSAGE_MAX_LENGTH = 500;
+
 export function FeedbackForm({ onSubmitted }: FeedbackFormProps) {
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
@@ -54,11 +56,23 @@ export function FeedbackForm({ onSubmitted }: FeedbackFormProps) {
             data-testid="feedback-message"
             required
             rows={4}
+            maxLength={MESSAGE_MAX_LENGTH}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="What did they say?"
             className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
           />
+          <p
+            data-testid="feedback-message-counter"
+            className={`mt-1 text-right text-xs ${
+              message.length >= MESSAGE_MAX_LENGTH
+                ? "text-amber-600"
+                : "text-slate-400"
+            }`}
+            aria-live="polite"
+          >
+            {message.length} / {MESSAGE_MAX_LENGTH}
+          </p>
         </div>
 
         <div>

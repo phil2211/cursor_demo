@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import get_connection, init_db
-from schemas import FeedbackCreate, FeedbackResponse
+from schemas import FeedbackCreate, FeedbackResponse, FeedbackUpdate
 from seed import seed_if_empty
 
 app = FastAPI(title="Feedback Pulse API")
@@ -62,4 +62,37 @@ def create_feedback(payload: FeedbackCreate) -> FeedbackResponse:
 
     if row is None:
         raise HTTPException(status_code=500, detail="Failed to create feedback.")
+    return row_to_response(row)
+
+
+@app.patch("/api/feedback/{feedback_id}", response_model=FeedbackResponse)
+def update_feedback(
+    feedback_id: int, payload: FeedbackUpdate
+) -> FeedbackResponse:
+    updates: dict[str, str] = {}
+    if payload.sentiment is not None:
+        updates["sentiment"] = payload.sentiment
+    if payload.status is not None:
+        updates["status"] = payload.status
+
+    with get_connection() as conn:
+        row = conn.execute(
+            "SELECT * FROM feedback WHERE id = ?", (feedback_id,)
+        ).fetchone()
+        if row is None:
+            raise HTTPException(status_code=404, detail="Feedback not found.")
+
+        set_clause = ", ".join(f"{key} = ?" for key in updates)
+        values = list(updates.values()) + [feedback_id]
+        conn.execute(
+            f"UPDATE feedback SET {set_clause} WHERE id = ?",
+            values,
+        )
+        conn.commit()
+        row = conn.execute(
+            "SELECT * FROM feedback WHERE id = ?", (feedback_id,)
+        ).fetchone()
+
+    if row is None:
+        raise HTTPException(status_code=500, detail="Failed to update feedback.")
     return row_to_response(row)

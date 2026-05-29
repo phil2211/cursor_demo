@@ -1,4 +1,4 @@
-import type { Feedback, FeedbackCreate } from "../types/feedback";
+import type { Feedback, FeedbackCreate, FeedbackUpdate } from "../types/feedback";
 
 const API_BASE = "/api";
 
@@ -30,6 +30,18 @@ export async function createFeedback(
 ): Promise<Feedback> {
   const response = await fetch(`${API_BASE}/feedback`, {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  return handleResponse<Feedback>(response);
+}
+
+export async function updateFeedback(
+  id: number,
+  payload: FeedbackUpdate
+): Promise<Feedback> {
+  const response = await fetch(`${API_BASE}/feedback/${id}`, {
+    method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
